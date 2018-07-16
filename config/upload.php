@@ -28,7 +28,6 @@ return [
      */
     'assets_path' => 'static/plugins/upload',
 
-
     /**
      * fieldName: 上传文件表单输入框名称
      * maxSize: 允许上传的最大尺寸(必须小于php.ini 以及服务器(nginx|apache)设置的最大值)

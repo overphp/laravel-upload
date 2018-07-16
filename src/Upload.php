@@ -226,11 +226,11 @@ abstract class Upload implements UploadInterface
         $info = [
             'status' => $this->error == null ? true : false,
             'message' => $this->getMessage(),
+            'url' => $this->getFileUrl(),
+            'name' => basename($this->getFileName()),
             'original' => $this->originalName,
             'extension' => $this->fileExtension,
-            'size' => $this->fileSize,
-            'name' => $this->getFileName(),
-            'url' => $this->getFileUrl()
+            'size' => $this->fileSize
         ];
         logger('file upload result', $info);
         return $info;
