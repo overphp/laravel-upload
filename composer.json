@@ -1,0 +1,25 @@
+{
+  "name": "overphp/upload",
+  "description": "laravel-upload",
+  "require": {
+    "php": ">=7.0.0",
+    "laravel/framework": "5.5.*"
+  },
+  "require-dev": {
+    "laravel/laravel": "5.5.*",
+    "phpunit/phpunit": "~6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Overphp\\Upload\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Overphp\\Upload\\UploadServiceProvider"
+      ]
+    }
+  },
+  "license": "MIT"
+}
