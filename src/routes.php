@@ -7,7 +7,7 @@
  * Time: 下午11:32
  */
 
-Route::group(['prefix' => 'upload', 'namespace' => 'Overphp\Upload'], function () {
+Route::group(['prefix' => 'upload', 'namespace' => 'Overphp\Upload', 'middleware' => ['web']], function () {
     Route::post('file', 'UploadController@file');
     Route::post('image', 'UploadController@image');
 });
