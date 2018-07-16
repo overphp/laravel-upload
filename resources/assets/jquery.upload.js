@@ -9,10 +9,7 @@
             url: '', /*上传地址*/
             val: '', /*返回value写入地址*/
             src: '', /*指定展现图片的img元素*/
-            view: '', /*指定展现图片的view元素*/
-            append: false, /*是否追加到view元素内*/
-            class: '', /*img标签class*/
-            style: '' /*img 标签样式*/
+            callback: ''
         };
         this.options = $.extend({}, this.defaults, options);
     };
@@ -23,10 +20,7 @@
                 url = this.options.url,
                 valEle = this.options.val,
                 srcEle = this.options.src,
-                viewEle = this.options.view,
-                append = this.options.append,
-                class_style = this.options.class,
-                style = this.options.style;
+                callback = this.options.callback;
 
             if (url === '') {
                 url = type === 'image' ? '/upload/image' : '/upload/file';
@@ -36,22 +30,19 @@
                 url: url,
                 dataType: 'json',
                 done: function (e, data) {
-                    if (data.result.status) {
-                        $(valEle).val(data.result.url);
-                        if (type === 'image') {
-                            if (srcEle !== '') {
-                                $(srcEle).attr('src', data.result.url);
-                            } else if (viewEle !== '') {
-                                var text = '<img class="' + class_style + '" style="' + style + '" src="' + data.result.url + '">';
-                                if (append) {
-                                    $(viewEle).append(text);
-                                } else {
-                                    $(viewEle).html(text);
+                    if (callback !== '' && typeof callback === 'function') {
+                        callback(data.result);
+                    } else {
+                        if (data.result.status) {
+                            $(valEle).val(data.result.url);
+                            if (type === 'image') {
+                                if (srcEle !== '') {
+                                    $(srcEle).attr('src', data.result.url);
                                 }
                             }
+                        } else {
+                            alert(data.result.message);
                         }
-                    } else {
-                        alert(data.result.message);
                     }
                 }
                 ,
