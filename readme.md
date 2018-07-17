@@ -18,8 +18,16 @@ composer update --prefer-dist
 ```
 // 发布包文件
 php artisan vendor:publish --tag=laravel-upload
+
 // 发布jquery上传插件（需要使用jquery.upload.js插件时发布）
 php artisan vendor:publish --tag=laravel-upload-assets
+```
+
+#### 网络访问
+默认上传文件存储在`storage/app/public`目录下，如果需要上传文件能够通过网络访问，需要创建 `pulic/storage` 到 `storage/app/public` 的符号链接。
+
+```
+php artisan storage:link
 ```
 
 ## 使用
@@ -55,8 +63,8 @@ php artisan vendor:publish --tag=laravel-upload-assets
 }
 ```
 #### 上传地址
-- 文件上传url：`upload/file` 
-- 图片上传url: `upload/image`
+- 文件上传url：`/upload/file` 
+- 图片上传url: `/upload/image`
 
 #### 自定义
 请参考 `Overphp\Upload\Upload.php` 文件以及 `Overphp\Upload\UploadController.php` 文件。
