@@ -17,7 +17,13 @@ return [
     'middleware' => [],
 
     /**
-     * 上传文件的软连接目录
+     * 自定义域名前缀
+     * 一般为：protocal://hostname:port 如: http://127.0.0.1
+     */
+    'url_prefix' => env('UPLOAD_URL_PREFIX', ''),
+
+    /**
+     * 上传文件的软连接目录，相对public_path()
      *
      * 上传文件返回的url组成方式: url_prefix + storage_link_dir + path_format
      */
@@ -45,7 +51,6 @@ return [
      * {ss} 会替换成两位秒
      * 非法字符 \ : * ? ' < > |
      *
-     * urlPrefix: 一般用于设置自定义域名等
      */
 
     // 文件上传配置
@@ -60,7 +65,6 @@ return [
             '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.pdf', '.txt', '.md', '.xml'
         ],
         'pathFormat' => '/file/{yyyy}{mm}{dd}/{rand:8}',
-        'urlPrefix' => env('UPLOAD_URL_PREFIX', ''),
     ],
 
     // 图片上传配置
@@ -68,7 +72,6 @@ return [
         'fieldName' => 'upfile',
         'maxSize' => 2097152,//2M
         'allowFiles' => ['.png', '.jpg', '.jpeg', '.gif', '.bmp'],
-        'pathFormat' => '/image/{yyyy}{mm}{dd}/{rand:8}',
-        'urlPrefix' => env('UPLOAD_URL_PREFIX', ''),
+        'pathFormat' => '/image/{yyyy}{mm}{dd}/{rand:8}'
     ],
 ];

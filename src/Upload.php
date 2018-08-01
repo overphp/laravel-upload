@@ -105,6 +105,7 @@ abstract class Upload implements UploadInterface
         $this->request = request();
         logger('file upload request', $this->request->all());
 
+        $config['url_prefix'] = $config['url_prefix'] ?? config('upload.url_prefix');
         $this->config = $config;
         $this->fileField = $config['fieldName'];
         $this->extensions = $config['allowFiles'] ?? [];
@@ -187,7 +188,7 @@ abstract class Upload implements UploadInterface
      */
     protected function getFileUrl()
     {
-        $url = rtrim($this->config['urlPrefix'], '/');
+        $url = rtrim($this->config['url_prefix'], '/');
         $url .= DIRECTORY_SEPARATOR . trim(config('upload.storage_link_dir'), '/');
         $url .= DIRECTORY_SEPARATOR . $this->getFileName();
         return $url;
