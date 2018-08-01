@@ -10,6 +10,7 @@
 namespace Overphp\Upload;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 abstract class Upload implements UploadInterface
@@ -25,6 +26,18 @@ abstract class Upload implements UploadInterface
      * @var string
      */
     protected $error;
+
+    /**
+     * 存储磁盘
+     *
+     * @var string
+     */
+    protected $disk = 'public';
+
+    /**
+     * @var Storage
+     */
+    protected $storage;
 
     /**
      * 上传配置
@@ -88,13 +101,6 @@ abstract class Upload implements UploadInterface
     protected $fileName;
 
     /**
-     * 文件在服务器中完整目录路径
-     *
-     * @var string
-     */
-    protected $fullStoragePath;
-
-    /**
      * url路径
      *
      * @var string
@@ -102,11 +108,20 @@ abstract class Upload implements UploadInterface
     protected $fileUrl;
 
     /**
-     * 存储路径：相对于storage文件夹
+     * 存储相对路径
      *
      * @var string
      */
-    protected $storagePath = 'app/public';
+    protected $storagePath;
+
+    /**
+     * Upload constructor.
+     */
+    public function __construct()
+    {
+        $this->disk = config('upload.disk') ?? $this->disk;
+        $this->storage = Storage::disk($this->disk);
+    }
 
     /**
      * 文件上传
@@ -119,7 +134,6 @@ abstract class Upload implements UploadInterface
         $this->request = request();
         logger('file upload request', $this->request->all());
 
-        $config['url_prefix'] = $config['url_prefix'] ?? config('upload.url_prefix');
         $this->config = $config;
         $this->fileField = $config['fieldName'];
         $this->extensions = $config['allowFiles'] ?? [];
@@ -163,14 +177,13 @@ abstract class Upload implements UploadInterface
     }
 
     /**
-     * 上传文件重命名
+     * 获取存储路径
      *
-     * @param bool $renew 重命名
+     * @return string
      */
-    protected function rename($renew = false)
+    protected function getStoragePath()
     {
-        if (empty($this->fileName) || $renew) {
-            //替换日期格式
+        if (empty($this->storagePath)) {
             $t = time();
             $d = explode('-', date('Y-y-m-d-H-i-s'));
             $format = $this->config['pathFormat'];
@@ -182,37 +195,19 @@ abstract class Upload implements UploadInterface
             $format = str_replace('{ii}', $d[5], $format);
             $format = str_replace('{ss}', $d[6], $format);
             $format = str_replace('{time}', $t, $format);
-
-            //替换随机字符串
-            $randNum = rand(1, 10000000000) . rand(1, 10000000000);
-            if (preg_match('/\{rand\:([\d]*)\}/i', $format, $matches)) {
-                $format = preg_replace('/\{rand\:[\d]*\}/i', substr($randNum, 0, $matches[1]), $format);
-            }
-
-            //md5
-            $md5 = substr(md5($t . $randNum), 0, 16);
-            $format = str_replace('{md5}', $md5, $format);
-            $format = trim($format . $this->fileExtension, '/');
-
-            // 完整路径
-            $path = storage_path($this->storagePath . DIRECTORY_SEPARATOR . $format);
-
-            $this->setFileUrl($format); // 设置url
-            $this->fileName = basename($path); // 新文件名
-            $this->fullStoragePath = dirname($path); // 完成保存路径
+            $this->storagePath = trim($format, '/');
         }
+        return $this->storagePath;
     }
 
     /**
-     * 设置上传文件的url
+     * 获取随机文件名
+     *
+     * @return string
      */
-    protected function setFileUrl($format)
+    protected function getRandomFileName()
     {
-        $url = rtrim($this->config['url_prefix'], '/');
-        $url .= '/' . trim(config('upload.storage_link_dir'), '/');
-        $url .= '/' . $format;
-
-        $this->fileUrl = $url;
+        return str_random(40) . $this->fileExtension;
     }
 
     /**
@@ -241,6 +236,8 @@ abstract class Upload implements UploadInterface
     }
 
     /**
+     * 返回上传结果
+     *
      * @return array
      */
     protected function getFileInfo()

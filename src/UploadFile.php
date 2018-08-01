@@ -34,15 +34,13 @@ class UploadFile extends Upload
             return;
         }
 
-        // 3. 重命名文件
-        $this->rename();
-
         // 4.保存文件
         try {
-            $this->file->move($this->fullStoragePath, $this->fileName);
+            $path = $this->storage->putFile($this->getStoragePath(), $this->file);
+            $this->fileUrl = $this->storage->url($path);
+            $this->fileName = basename($path);
         } catch (FileException $e) {
             $this->error = $this->file->getError();
-            return;
         }
     }
 }

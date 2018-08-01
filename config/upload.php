@@ -17,17 +17,11 @@ return [
     'middleware' => [],
 
     /**
-     * 自定义域名前缀
-     * 一般为：protocal://hostname:port 如: http://127.0.0.1
-     */
-    'url_prefix' => env('UPLOAD_URL_PREFIX', ''),
-
-    /**
-     * 上传文件的软连接目录，相对public_path()
+     * 使用的存储驱动器
      *
-     * 上传文件返回的url组成方式: url_prefix + storage_link_dir + path_format
+     * https://laravel.com/docs/5.5/filesystem
      */
-    'storage_link_dir' => env('STORAGE_LINK_DIR', 'storage'),
+    'disk' => 'public',
 
     /**
      * 静态资源文件发布目录，相对public_path()
@@ -38,9 +32,8 @@ return [
      * fieldName: 上传文件表单输入框名称
      * maxSize: 允许上传的最大尺寸(必须小于php.ini 以及服务器(nginx|apache)设置的最大值)
      * allowFiles: 允许上传的文件扩展名
-     * pathFormat 文件命名
+     * pathFormat 文件存储路径(只是路径，文件命名会自动随机40位字符)
      *
-     * {rand:6} 会替换成随机数,后面的数字是随机数的位数
      * {time} 会替换成时间戳
      * {yyyy} 会替换成四位年份
      * {yy} 会替换成两位年份
@@ -50,7 +43,6 @@ return [
      * {ii} 会替换成两位分钟
      * {ss} 会替换成两位秒
      * 非法字符 \ : * ? ' < > |
-     *
      */
 
     // 文件上传配置
@@ -64,7 +56,7 @@ return [
             '.rar', '.zip', '.tar', '.gz', '.7z', '.bz2', '.cab', '.iso',
             '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.pdf', '.txt', '.md', '.xml'
         ],
-        'pathFormat' => 'file/{yyyy}{mm}{dd}/{rand:8}',
+        'pathFormat' => 'file/{yyyy}{mm}{dd}',
     ],
 
     // 图片上传配置
@@ -72,6 +64,6 @@ return [
         'fieldName' => 'upfile',
         'maxSize' => 2097152,//2M
         'allowFiles' => ['.png', '.jpg', '.jpeg', '.gif', '.bmp'],
-        'pathFormat' => 'image/{yyyy}{mm}{dd}/{rand:8}'
+        'pathFormat' => 'image/{yyyy}{mm}{dd}'
     ],
 ];
