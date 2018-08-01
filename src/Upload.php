@@ -22,9 +22,9 @@ abstract class Upload implements UploadInterface
     /**
      * 上传错误
      *
-     * @var null
+     * @var string
      */
-    protected $error = null;
+    protected $error;
 
     /**
      * 上传配置
@@ -74,13 +74,6 @@ abstract class Upload implements UploadInterface
     protected $fileSize;
 
     /**
-     * 上传文件重命名
-     *
-     * @var null
-     */
-    protected $fileName = null;
-
-    /**
      * 上传文件的原始名称
      *
      * @var string
@@ -88,11 +81,32 @@ abstract class Upload implements UploadInterface
     protected $originalName;
 
     /**
+     * 上传文件新名称
+     *
+     * @var string
+     */
+    protected $fileName;
+
+    /**
+     * 文件在服务器中完整目录路径
+     *
+     * @var string
+     */
+    protected $fullStoragePath;
+
+    /**
+     * url路径
+     *
+     * @var string
+     */
+    protected $fileUrl;
+
+    /**
      * 存储路径：相对于storage文件夹
      *
      * @var string
      */
-    protected $storage_path = 'app/public';
+    protected $storagePath = 'app/public';
 
     /**
      * 文件上传
@@ -149,11 +163,13 @@ abstract class Upload implements UploadInterface
     }
 
     /**
-     * 设置完整的命名(重命名文件)
+     * 上传文件重命名
+     *
+     * @param bool $renew 重命名
      */
-    protected function getFileName()
+    protected function rename($renew = false)
     {
-        if ($this->fileName == null) {
+        if (empty($this->fileName) || $renew) {
             //替换日期格式
             $t = time();
             $d = explode('-', date('Y-y-m-d-H-i-s'));
@@ -176,22 +192,27 @@ abstract class Upload implements UploadInterface
             //md5
             $md5 = substr(md5($t . $randNum), 0, 16);
             $format = str_replace('{md5}', $md5, $format);
-            $this->fileName = trim($format . $this->fileExtension, '/');
+            $format = trim($format . $this->fileExtension, '/');
+
+            // 完整路径
+            $path = storage_path($this->storagePath . DIRECTORY_SEPARATOR . $format);
+
+            $this->setFileUrl($format); // 设置url
+            $this->fileName = basename($path); // 新文件名
+            $this->fullStoragePath = dirname($path); // 完成保存路径
         }
-        return $this->fileName;
     }
 
     /**
-     * 获取上传文件的url
-     *
-     * @return string
+     * 设置上传文件的url
      */
-    protected function getFileUrl()
+    protected function setFileUrl($format)
     {
         $url = rtrim($this->config['url_prefix'], '/');
-        $url .= DIRECTORY_SEPARATOR . trim(config('upload.storage_link_dir'), '/');
-        $url .= DIRECTORY_SEPARATOR . $this->getFileName();
-        return $url;
+        $url .= '/' . trim(config('upload.storage_link_dir'), '/');
+        $url .= '/' . $format;
+
+        $this->fileUrl = $url;
     }
 
     /**
@@ -227,8 +248,8 @@ abstract class Upload implements UploadInterface
         $info = [
             'status' => $this->error == null ? true : false,
             'message' => $this->getMessage(),
-            'url' => $this->getFileUrl(),
-            'name' => basename($this->getFileName()),
+            'url' => $this->fileUrl,
+            'name' => $this->fileName,
             'original' => $this->originalName,
             'extension' => $this->fileExtension,
             'size' => $this->fileSize

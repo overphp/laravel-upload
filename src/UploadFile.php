@@ -24,20 +24,22 @@ class UploadFile extends Upload
             return;
         }
 
+        // 2.1 设置文件名等
         $this->fileSize = $this->file->getSize();
         $this->fileExtension = '.' . $this->file->guessExtension();
         $this->originalName = $this->file->getClientOriginalName();
 
-        // 2. 校验文件大小和扩展名
+        // 2.2 校验文件大小和扩展名
         if (!$this->checkFileSize() || !$this->checkFileExtension()) {
             return;
         }
 
-        // 3.保存文件
+        // 3. 重命名文件
+        $this->rename();
+
+        // 4.保存文件
         try {
-            $path = storage_path($this->storage_path . DIRECTORY_SEPARATOR . $this->getFileName());
-            $name = basename($path);
-            $this->file->move(dirname($path), $name);
+            $this->file->move($this->fullStoragePath, $this->fileName);
         } catch (FileException $e) {
             $this->error = $this->file->getError();
             return;

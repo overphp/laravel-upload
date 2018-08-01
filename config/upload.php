@@ -64,7 +64,7 @@ return [
             '.rar', '.zip', '.tar', '.gz', '.7z', '.bz2', '.cab', '.iso',
             '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.pdf', '.txt', '.md', '.xml'
         ],
-        'pathFormat' => '/file/{yyyy}{mm}{dd}/{rand:8}',
+        'pathFormat' => 'file/{yyyy}{mm}{dd}/{rand:8}',
     ],
 
     // 图片上传配置
@@ -72,6 +72,6 @@ return [
         'fieldName' => 'upfile',
         'maxSize' => 2097152,//2M
         'allowFiles' => ['.png', '.jpg', '.jpeg', '.gif', '.bmp'],
-        'pathFormat' => '/image/{yyyy}{mm}{dd}/{rand:8}'
+        'pathFormat' => 'image/{yyyy}{mm}{dd}/{rand:8}'
     ],
 ];
