@@ -31,7 +31,7 @@ return [
     /**
      * fieldName: 上传文件表单输入框名称
      * maxSize: 允许上传的最大尺寸(必须小于php.ini 以及服务器(nginx|apache)设置的最大值)
-     * allowFiles: 允许上传的文件扩展名
+     * allowFiles: 允许上传的文件扩展名(全部小写，大写会无法通过检测)
      * pathFormat 文件存储路径(只是路径，文件命名会自动随机40位字符)
      *
      * {time} 会替换成时间戳

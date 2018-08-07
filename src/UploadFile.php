@@ -9,7 +9,7 @@
 
 namespace Overphp\Upload;
 
-class UploadFile extends Upload
+class UploadFile extends AbstractUpload
 {
     /**
      * 文件校验及保存
@@ -24,21 +24,21 @@ class UploadFile extends Upload
             return;
         }
 
-        // 2.1 设置文件名等
+        // 2. 设置文件名等
         $this->fileSize = $this->file->getSize();
-        $this->fileExtension = '.' . $this->file->guessExtension();
+        $this->fileExtension = '.' . $this->file->getClientOriginalExtension();
         $this->originalName = $this->file->getClientOriginalName();
+        $this->fileName = $this->getRandomFileName();
 
-        // 2.2 校验文件大小和扩展名
+        // 3. 校验文件大小和扩展名
         if (!$this->checkFileSize() || !$this->checkFileExtension()) {
             return;
         }
 
         // 4.保存文件
         try {
-            $path = $this->storage->putFile($this->getStoragePath(), $this->file);
+            $path = $this->storage->putFileAs($this->getStoragePath(), $this->file, $this->fileName);
             $this->fileUrl = $this->storage->url($path);
-            $this->fileName = basename($path);
         } catch (FileException $e) {
             $this->error = $this->file->getError();
         }

@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-abstract class Upload implements UploadInterface
+abstract class AbstractUpload implements UploadInterface
 {
     /**
      * @var Request
@@ -169,7 +169,7 @@ abstract class Upload implements UploadInterface
      */
     protected function checkFileExtension()
     {
-        if (!in_array($this->fileExtension, $this->extensions)) {
+        if (!in_array(strtolower($this->fileExtension), $this->extensions)) {
             $this->error = UPLOAD_ERR_EXTENSION;
             return false;
         }
