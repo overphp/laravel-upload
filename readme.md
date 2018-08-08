@@ -67,7 +67,8 @@ php artisan storage:link
 请参考 `Overphp\Upload\Upload.php` 文件以及 `Overphp\Upload\UploadController.php` 文件。
 
 ## 结合jquery.upload.js插件使用
-`jquery.upload.js` 上传插件在 [jquery.fileupload.js](https://github.com/blueimp/jQuery-File-Upload) 插件基础上进行了简单封装。 
+`jquery.upload.js` 上传插件在 [jquery.fileupload.js](https://github.com/blueimp/jQuery-File-Upload) 插件基础上进行了简单封装。  
+同时依赖 `layer.js` 来进行加载层和消息提示。
 
 #### 发布jquery.upload.js文件
 如果需要修改插件发布的路径,可以修改`upload.assets_path`为需要的路径即可。
@@ -85,6 +86,7 @@ php artisan vendor:publish --tag=laravel-upload-assets
 |val| string| true| '#abc' |文件上传成功后返回的文件url地址写入对象。|
 |src| string| true| '#image'|图片文件上传成功后返回的图片url地址写入 `img`标签对象，仅`type`为`image`时有效。|
 |callback|callback|false||自定义返回结果处理，使用本参数时，除了`type`属性，其他全部无效。|
+|load|bool|false|false|是否显示加载层，默认显示|
 
 #### 使用插件
 ##### 文件上传
