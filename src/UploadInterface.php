@@ -10,13 +10,18 @@
 namespace Overphp\Upload;
 
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 interface UploadInterface
 {
     /**
      * 文件上传
      *
-     * @param array $config
+     * @param UploadedFile $file 上传的文件
+     * @param array $extensions 允许上传的格式
+     * @param int $maxSize 允许上传的大小
+     * @param string $pathFormat 存储路径
      * @return array
      */
-    public function upload(array $config);
+    public function upload(UploadedFile $file, array $extensions, int $maxSize, string $pathFormat);
 }

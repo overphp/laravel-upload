@@ -17,9 +17,8 @@ class UploadController extends Controller
 
     /**
      * UploadController constructor.
-     * @param $service
      */
-    public function __construct(UploadFile $service)
+    public function __construct(Upload $service)
     {
         $this->middleware(config('upload.middleware'));
         $this->service = $service;
